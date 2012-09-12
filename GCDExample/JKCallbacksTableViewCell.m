@@ -9,8 +9,6 @@
 #import "JKCallbacksTableViewCell.h"
 
 
-NSString * const kJKPrepareForReuseNotification = @"JKCallbacksTableViewCell_PrepareForReuse";
-
 @implementation JKCallbacksTableViewCell
 
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
@@ -43,14 +41,6 @@ NSString * const kJKPrepareForReuseNotification = @"JKCallbacksTableViewCell_Pre
 		 [change objectForKey:NSKeyValueChangeOldKey] == [NSNull null])) {
 		[self setNeedsLayout];
 	}
-}
-
-- (void)prepareForReuse
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:kJKPrepareForReuseNotification
-														object:self];
-	
-	[super prepareForReuse];
 }
 
 @end
