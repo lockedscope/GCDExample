@@ -20,7 +20,7 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
 
 @interface RootViewController()
 
-- (void)tableViewCellIsPreparingForReuse:(NSNotification *)notification;
+- (void)tableViewCellIsPreparingForReuse:(JKCallbacksTableViewCell *)cell;
 
 @end
 
@@ -69,20 +69,11 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
     imageArray = [[[NSFileManager defaultManager] contentsOfDirectoryAtPath:imageFolder
                                                                       error:NULL] retain];
 	
-	// Register for our table view cell notification
-	[[NSNotificationCenter defaultCenter] addObserver:self
-											 selector:@selector(tableViewCellIsPreparingForReuse:)
-												 name:kJKPrepareForReuseNotification
-											   object:nil];
     [super viewDidLoad];
 }
 
 - (void)viewDidUnload
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self
-													name:kJKPrepareForReuseNotification
-												  object:nil];
-	
 	[super viewDidUnload];
 }
 
@@ -114,6 +105,10 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
     if (cell == nil) {
         cell = [[[JKCallbacksTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault
 												reuseIdentifier:CellIdentifier] autorelease];
+    }
+    else
+    {
+    	[self tableViewCellIsPreparingForReuse:cell];
     }
     
     // Get the filename to load.
@@ -166,18 +161,14 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
 
 #pragma mark -
 
-- (void)tableViewCellIsPreparingForReuse:(NSNotification *)notification
+- (void)tableViewCellIsPreparingForReuse:(JKCallbacksTableViewCell *)cell
 {
-	if ([[notification object] isKindOfClass:[JKCallbacksTableViewCell class]]) {
-		JKCallbacksTableViewCell *cell = (JKCallbacksTableViewCell *)[notification object];
-		
-		objc_setAssociatedObject(cell,
-								 kIndexPathAssociationKey,
-								 nil,
-								 OBJC_ASSOCIATION_RETAIN);
-		
-		[[cell imageView] setImage:nil];
-	}
+	objc_setAssociatedObject(cell,
+				 kIndexPathAssociationKey,
+				 nil,
+				 OBJC_ASSOCIATION_RETAIN);
+
+	[[cell imageView] setImage:nil];
 }
 
 @end
