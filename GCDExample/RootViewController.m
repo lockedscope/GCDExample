@@ -108,7 +108,12 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
     }
     else
     {
-    	[self tableViewCellIsPreparingForReuse:cell];
+	objc_setAssociatedObject(cell,
+				 kIndexPathAssociationKey,
+				 nil,
+				 OBJC_ASSOCIATION_RETAIN);
+
+	[[cell imageView] setImage:nil];
     }
     
     // Get the filename to load.
@@ -157,18 +162,6 @@ static char * const kIndexPathAssociationKey = "JK_indexPath";
 	}
     
     return cell;
-}
-
-#pragma mark -
-
-- (void)tableViewCellIsPreparingForReuse:(JKCallbacksTableViewCell *)cell
-{
-	objc_setAssociatedObject(cell,
-				 kIndexPathAssociationKey,
-				 nil,
-				 OBJC_ASSOCIATION_RETAIN);
-
-	[[cell imageView] setImage:nil];
 }
 
 @end
